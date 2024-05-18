@@ -1,3 +1,1 @@
 # shared-pointer
-
-a
