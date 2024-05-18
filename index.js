@@ -1,6 +1,7 @@
 const express = require('express')
 const { createServer } = require("http")
 const { Server } = require("socket.io")
+const path = require("path")
 
 const app = express()
 const httpServer = createServer(app)
@@ -15,7 +16,7 @@ io.on('connection', socket => {
 });
 
 app.get('/', (req, res) => {
-    res.sendFile('C:/Users/gaoka/workspace-estudos/shared-pointer/index.html')
+    res.sendFile(path.join(__dirname, '/index.html'))
 })
 
 app.post('/', (req, res) => {
