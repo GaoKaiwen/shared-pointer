@@ -4,8 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .mouse-pointer {
+            position: absolute;
+            background-color: lightblue;
+            padding: 5px;
+            border: 1px solid blue;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Test</h1>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+    
+        socket.on('position', (position) => {
+            const json = JSON.parse(position)
+            let cursorDiv = document.getElementById(json.id)
+
+            if(cursorDiv == null) {
+                cursorDiv = document.createElement('div')
+                cursorDiv.id = json.id
+                cursorDiv.className = 'mouse-pointer'
+            }
+            cursorDiv.style.left = `${json.mousePositionX}px`
+            cursorDiv.style.top = `${json.mousePositionY}px`
+            cursorDiv.textContent = json.id
+            document.body.appendChild(cursorDiv);
+        })
+    
+        function coordinate(event) {
+            let x = event.clientX
+            let y = event.clientY
+            console.log(`X position: ${x}`)
+            console.log(`Y position: ${y}`)
+    
+            const xhr = new XMLHttpRequest()
+            xhr.open("POST", window.location.href)
+            xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
+    
+            const body = JSON.stringify({
+                mousePositionX: x,
+                mousePositionY: y
+            });
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText)
+                } else {
+                    console.log(`Error: ${xhr.status}`)
+                }
+            };
+            xhr.send(body)
+        }
+    
+        window.addEventListener("mousemove", coordinate)
+    </script>
+    
 </body>
 </html>
