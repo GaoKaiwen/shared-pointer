@@ -7,7 +7,6 @@ const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer)
 
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -23,9 +22,10 @@ app.post('/', (req, res) => {
     console.log(`Mouse X position: ${req.body.mousePositionX}`)
     console.log(`Mouse Y position: ${req.body.mousePositionY}`)
     res.status(200).send('Mouse positions received successfully')
-
+    
+    console.log(req.headers)
     io.emit('position', JSON.stringify({
-        id: req.headers['x-forwarded-for'].split(',')[0],
+        id: req.header('origin'),
         mousePositionX: req.body.mousePositionX,
         mousePositionY: req.body.mousePositionY
     }))
