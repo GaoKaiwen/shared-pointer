@@ -42,8 +42,7 @@
         function coordinate(event) {
             let x = event.clientX
             let y = event.clientY
-            console.log(`X position: ${x}`)
-            console.log(`Y position: ${y}`)
+            console.log(`Cursor position: (${x}, ${y})`)
     
             const xhr = new XMLHttpRequest()
             xhr.open("POST", window.location.href)
