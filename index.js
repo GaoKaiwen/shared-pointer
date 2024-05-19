@@ -25,7 +25,7 @@ app.post('/', (req, res) => {
     res.status(200).send('Mouse positions received successfully')
 
     io.emit('position', JSON.stringify({
-        id: req.socket.remoteAddress,
+        id: req.headers['x-forwarded-for'].split(',')[0],
         mousePositionX: req.body.mousePositionX,
         mousePositionY: req.body.mousePositionY
     }))
