@@ -20,11 +20,12 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    console.log(`Cursor position: (${req.body.mousePositionX}, ${req.body.mousePositionY})`)
+    console.log(`Mouse X position: ${req.body.mousePositionX}`)
+    console.log(`Mouse Y position: ${req.body.mousePositionY}`)
     res.status(200).send('Mouse positions received successfully')
 
     io.emit('position', JSON.stringify({
-        id: req.hostname,
+        id: req.socket.remoteAddress,
         mousePositionX: req.body.mousePositionX,
         mousePositionY: req.body.mousePositionY
     }))
