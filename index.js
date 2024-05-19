@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 io.on('connection', socket => {
-    console.log('User connected')
+    console.log(`User ${socket.handshake.address} connected`)
 });
 
 app.get('/', (req, res) => {
