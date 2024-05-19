@@ -7,6 +7,7 @@ const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer)
 
+app.set('trust proxy', true)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
