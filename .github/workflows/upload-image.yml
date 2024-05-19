@@ -1,15 +1,15 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Upload image to repository CI
 
 on:
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  push_to_registries:
-    name: Push Docker image to multiple registries
+  push_to_dockerhub:
+    name: Push Docker image to Dockerhub
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -26,29 +26,20 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        uses: docker/login-action@v3.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v5.5.1
         with:
           images: |
             GaoKaiwen/shared-pointer
-            ghcr.io/${{ github.repository }}
 
       - name: Build and push Docker images
         id: push
-        #uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         uses: docker/build-push-action@v5
         with:
           context: .
