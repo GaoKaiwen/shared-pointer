@@ -25,7 +25,7 @@ app.post('/', (req, res) => {
     
     console.log(req.headers)
     io.emit('position', JSON.stringify({
-        id: req.header('origin'),
+        id: req.header('user-unique-id'),
         mousePositionX: req.body.mousePositionX,
         mousePositionY: req.body.mousePositionY
     }))
