@@ -23,7 +23,6 @@ app.post('/', (req, res) => {
     console.log(`Mouse Y position: ${req.body.mousePositionY}`)
     res.status(200).send('Mouse positions received successfully')
     
-    console.log(req.headers)
     io.emit('position', JSON.stringify({
         id: req.header('user-unique-id'),
         mousePositionX: req.body.mousePositionX,

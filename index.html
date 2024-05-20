@@ -7,7 +7,6 @@
     <style>
         .mouse-pointer {
             position: absolute;
-            background-color: lightblue;
             padding: 5px;
             border: 1px solid blue;
             border-radius: 50%;
@@ -59,12 +58,25 @@
                 cursorDiv = document.createElement('div')
                 cursorDiv.id = json.id
                 cursorDiv.className = 'mouse-pointer'
+                cursorDiv.style.backgroundColor = `${stringToColour(json.id)}`
+                document.body.appendChild(cursorDiv);
             }
-            cursorDiv.style.left = `${json.mousePositionX}px`
-            cursorDiv.style.top = `${json.mousePositionY}px`
-            cursorDiv.textContent = json.id
-            document.body.appendChild(cursorDiv);
+            cursorDiv.style.left = `${json.mousePositionX - 15}px`
+            cursorDiv.style.top = `${json.mousePositionY - 15}px`
         })
+
+        const stringToColour = (str) => {
+            let hash = 0;
+            str.split('').forEach(char => {
+                hash = char.charCodeAt(0) + ((hash << 5) - hash)
+            })
+            let colour = '#'
+            for (let i = 0; i < 3; i++) {
+                const value = (hash >> (i * 8)) & 0xff
+                colour += value.toString(16).padStart(2, '0')
+            }
+            return colour
+        }
     
         function coordinate(event) {
             let x = event.clientX
@@ -75,7 +87,6 @@
             xhr.open("POST", window.location.href)
             xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
             xhr.setRequestHeader("user-unique-id", userUniqueId)
-            console.log(window.ip)
     
             const body = JSON.stringify({
                 mousePositionX: x,
