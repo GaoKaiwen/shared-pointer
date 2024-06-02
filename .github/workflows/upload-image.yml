@@ -51,7 +51,7 @@ jobs:
       - name: Copy Docker Compose file to server
         uses: appleboy/scp-action@v0.1.7
         with:
-          source: ./docker-compose.yml
+          source: ${GITHUB_WORKSPACE}/docker-compose.yml
           target: ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/shared-pointer
           key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ${{ secrets.SERVER_PASSPHRASE }}
