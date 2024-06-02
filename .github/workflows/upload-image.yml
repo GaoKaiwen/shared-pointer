@@ -55,7 +55,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
-          source: ${GITHUB_WORKSPACE}/docker-compose.yml
+          source: ${{ github.workspace }}/docker-compose.yml
           target: /home/ubuntu/shared-pointer
 
 
