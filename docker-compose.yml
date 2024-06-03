@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  pointer:
+    image: gaokaiwen/shared-pointer:pr-3
+    networks:
+      - nginxproxynamager_default
+
+networks:
+  nginxproxynamager_default:
+    external: true

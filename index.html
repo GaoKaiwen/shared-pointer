@@ -4,8 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .mouse-pointer {
+            position: absolute;
+            padding: 5px;
+            border: 1px solid blue;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+        }
+    </style>
 </head>
+
 <body>
-    <a>Test</a>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function generateUUID() { // Public Domain/MIT
+            var d = new Date().getTime(); // Timestamp
+            var d2 = (performance && performance.now && (performance.now() * 1000)) || 0; // Time in microseconds since page-load or 0 if unsupported
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16; // Random number between 0 and 16
+                if (d > 0) { // Use timestamp until depleted
+                    r = (d + r) % 16 | 0;
+                    d = Math.floor(d / 16);
+                } else { // Use microseconds since page-load if supported
+                    r = (d2 + r) % 16 | 0;
+                    d2 = Math.floor(d2 / 16);
+                }
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        function getOrCreateUserUniqueIdentifier() {
+            let uniqueId = localStorage.getItem('userUniqueId');
+            if (!uniqueId) {
+                uniqueId = generateUUID();
+                localStorage.setItem('userUniqueId', uniqueId);
+            }
+            return uniqueId;
+        }
+
+        var userUniqueId = getOrCreateUserUniqueIdentifier()
+
+        const socket = io()
+    
+        socket.on('position', (position) => {
+            const json = JSON.parse(position)
+            let cursorDiv = document.getElementById(json.id)
+
+            if(cursorDiv == null) {
+                cursorDiv = document.createElement('div')
+                cursorDiv.id = json.id
+                cursorDiv.className = 'mouse-pointer'
+                cursorDiv.style.backgroundColor = `${stringToColour(json.id)}`
+                document.body.appendChild(cursorDiv);
+            }
+            cursorDiv.style.left = `${json.mousePositionX - 15}px`
+            cursorDiv.style.top = `${json.mousePositionY - 15}px`
+        })
+
+        const stringToColour = (str) => {
+            let hash = 0;
+            str.split('').forEach(char => {
+                hash = char.charCodeAt(0) + ((hash << 5) - hash)
+            })
+            let colour = '#'
+            for (let i = 0; i < 3; i++) {
+                const value = (hash >> (i * 8)) & 0xff
+                colour += value.toString(16).padStart(2, '0')
+            }
+            return colour
+        }
+    
+        function coordinate(event) {
+            let x = event.clientX
+            let y = event.clientY
+            console.log(`Cursor position: (${x}, ${y})`)
+    
+            const xhr = new XMLHttpRequest()
+            xhr.open("POST", window.location.href)
+            xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
+            xhr.setRequestHeader("user-unique-id", userUniqueId)
+    
+            const body = JSON.stringify({
+                mousePositionX: x,
+                mousePositionY: y
+            });
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText)
+                } else {
+                    console.log(`Error: ${xhr.status}`)
+                }
+            };
+            xhr.send(body)
+        }
+    
+        window.addEventListener("mousemove", coordinate)
+    </script>
+    
 </body>
 </html>
